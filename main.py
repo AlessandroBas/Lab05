@@ -1,5 +1,4 @@
 import flet as ft
-from automobile import Automobile
 from alert import AlertManager
 from autonoleggio import Autonoleggio
 
@@ -41,7 +40,7 @@ def main(page: ft.Page):
     marca = ft.TextField(label="Inserire la marca")
     modello = ft.TextField(label="Inserire il modello")
     anno = ft.TextField(label="Inserire l'anno di produzione")
-    numPosti = ft.TextField(value="0", text_align="right", width=100)
+    numPosti = ft.TextField(value="0", width=100)
 
     def minus_click(e):
         numPosti.value = int(numPosti.value) - 1
@@ -72,8 +71,15 @@ def main(page: ft.Page):
 
     # Handlers per la gestione dei bottoni utili all'inserimento di una nuova auto
     # TODO
-    def aggiungi_auto():
-        pass
+    def aggiungi_auto(e):
+
+        try:
+            anno.value = int(anno.value)
+        except Exception as e:
+            alert.show_alert(f"❌Errore: Inserisci valori numerici validi per anno e posti")
+        autonoleggio.aggiungi_automobile(str(marca.value), str(modello.value),str(anno.value),int(numPosti.value))
+        aggiorna_lista_auto()
+        page.update()
 
     # --- EVENTI ---
     toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=cambia_tema)
@@ -100,7 +106,8 @@ def main(page: ft.Page):
 
         # Sezione 3
         # TODO
-        ft.Row([marca, modello, anno, ft.IconButton(ft.Icons.REMOVE, on_click=minus_click),
+        ft.Text("Aggiungi nuova automobile", size=20),
+        ft.Row([marca, modello,anno, ft.IconButton(ft.Icons.REMOVE, on_click=minus_click),
         numPosti,ft.IconButton(ft.Icons.ADD, on_click=plus_click),],alignment=ft.MainAxisAlignment.CENTER,),
         pulsante_aggiungi_auto,
 
